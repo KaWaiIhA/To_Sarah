@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Happy Birthday 2050 🎂</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      height: 100vh;
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(circle at 20% 20%, #0f0c29 0%, #24123a 45%, #09050a 100%);
+      color: #fff;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .aurora {
+      position: fixed;
+      inset: -40%;
+      background: conic-gradient(from 0deg, #6a5acd, #4de0e0, #ff6fb0, #ffd24d, #6a5acd);
+      filter: blur(160px) saturate(120%);
+      opacity: 0.35;
+      animation: spin 24s linear infinite;
+      z-index: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .stage {
+      position: relative;
+      z-index: 2;
+      width: min(980px, 94vw);
+      height: min(720px, 86vh);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .envelope {
+      width: clamp(180px, 30vw, 260px);
+      height: clamp(120px, 20vw, 180px);
+      position: relative;
+      cursor: pointer;
+      perspective: 1200px;
+      z-index: 6;
+      transition: opacity 0.6s ease;
+      background: #ffe6f2;
+      border: 4px solid #ff4da6;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(255, 80, 150, 0.22);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: linear-gradient(145deg, #ff4da6, #ff80c0);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      border-radius: 12px 12px 0 0;
+      transform-origin: top;
+      transition: transform 900ms cubic-bezier(.2,.9,.2,1);
+      z-index: 7;
+    }
+    .flap.open { transform: rotateX(-180deg); }
+
+    .heart {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(24px, 6vw, 48px);
+      color: #ff3385;
+      z-index: 8;
+      pointer-events: none;
+    }
+
+    .envelope-text {
+      margin-top: auto;
+      font-size: clamp(12px, 3vw, 18px);
+      color: #fff;
+      text-align: center;
+      padding-bottom: 8px;
+      pointer-events: none;
+    }
+
+    .message-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(300px, 80vw, 600px);
+      height: clamp(150px, 60vh, 350px);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.96);
+      z-index: 9;
+      opacity: 0;
+      transition: opacity 600ms ease;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(14px, 4vw, 24px);
+      font-weight: 700;
+      color: #111;
+      text-align: center;
+      white-space: pre-wrap;
+      padding: clamp(16px, 5vw, 40px);
+    }
+    .message-box.show { opacity: 1; }
+    .message-box.hide { opacity: 0; }
+
+    .hide { opacity: 0; pointer-events: none; transition: opacity 0.6s ease; }
+
+    .cake {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      z-index: 5;
+      pointer-events: none;
+      padding: 10px;
+    }
+    .cake-inner {
+      position: relative;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: opacity 600ms ease;
+      opacity: 0;
+      max-width: 100%;
+    }
+    .cake-inner.show { opacity: 1; animation: bounce 1s ease; }
+
+    @keyframes bounce {
+      0% { transform: scale(0.8); }
+      60% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .layer {
+      position: relative;
+      border-radius: 18px;
+      box-shadow: 0 18px 50px rgba(255, 90, 150, 0.14);
+      background: linear-gradient(160deg, rgba(255,125,170,1) 0%, rgba(255,88,140,1) 100%);
+      border: 2px solid rgba(255,255,255,0.06);
+      transform: translateY(60px) scale(0.98);
+      opacity: 0;
+      transition: transform 700ms cubic-bezier(.2,.9,.2,1), opacity 600ms ease;
+    }
+    .layer.show { transform: translateY(0) scale(1); opacity: 1; }
+
+    .layer-bottom { width: min(420px, 92vw); height: clamp(60px, 11vh, 120px); }
+    .layer-middle { width: min(320px, 80vw); height: clamp(50px, 9vh, 96px); }
+    .layer-top { 
+      width: min(230px, 65vw); 
+      height: clamp(40px, 7vh, 80px); 
+      background: linear-gradient(to bottom, #fff 0%, #ffddee 100%);
+      border-radius: 18px 18px 0 0; 
+      box-shadow: inset 0 5px 10px rgba(255,255,255,0.4); 
+    }
+
+    .layer-top .candle {
+      position: absolute;
+      left: 50%;
+      top: -40px;
+      transform: translateX(-50%);
+      width: clamp(8px, 3vw, 14px);
+      height: clamp(25px, 10vh, 40px);
+      background: #fff;
+      border-radius: 8px;
+      border: 3px solid rgba(255,204,0,0.95);
+      opacity: 0;
+      transition: opacity 360ms ease;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 6px;
+    }
+    .layer-top .candle.show { opacity: 1; }
+
+    .flame {
+      top: -30px;
+      width: clamp(10px, 2vw, 16px);
+      height: clamp(12px, 5vh, 20px);
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffe86f 30%, #ff8a3d 70%);
+      box-shadow: 0 8px 30px rgba(255,140,60,0.18), inset 0 -6px 12px rgba(255,200,80,0.12);
+      transform: translateY(-6px) scale(0.9);
+      opacity: 0;
+      animation: flicker 360ms infinite alternate;
+    }
+    .flame.show { opacity: 1; transform: translateY(0) scale(1); }
+    @keyframes flicker { from { transform: translateY(-6px) scale(0.96); } to { transform: translateY(-2px) scale(1.06); } }
+
+    .confetti {
+      position: absolute;
+      font-size: clamp(16px, 4vw, 24px);
+      animation: fall 3.5s linear forwards;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-50px) rotate(0); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    .firework {
+      position: absolute;
+      border-radius: 50%;
+      animation: explode 1.2s ease-out forwards;
+      pointer-events: none;
+      z-index: 1;
+    }
+    @keyframes explode {
+      0% { transform: scale(0.1); opacity: 1; }
+      80% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.2); opacity: 0; }
+    }
+
+    .cake-message {
+      margin-bottom: 4px;
+      font-size: clamp(18px, 5vw, 28px);
+      font-weight: 900;
+      font-family: 'Arial Black', sans-serif;
+      text-align: center;
+      color: #fff;
+    }
+
+    .cake-bible {
+      border-radius: 12px 12px 0 0;
+      margin-bottom:-300px ;
+      font-size: clamp(12px, 3vw, 18px);
+      text-align: center;
+      color: #ffe;
+    }
+
+    /* Balloons */
+    .balloon {
+      position: absolute;
+      width: clamp(30px, 4vw, 50px);
+      height: clamp(40px, 5vw, 60px);
+      background: radial-gradient(circle at 30% 30%, #ff4da6, #ff80c0);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      pointer-events: none;
+      animation: floatUp 6s ease-in forwards;
+      opacity: 0;
+    }
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(0.8); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+    }
+
+/* General icing style for all layers */
+.icing-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background: linear-gradient(to bottom, #fff 0%, #ffe6f2 100%);
+  border-radius: 18px 18px 8px 8px;
+  overflow: hidden;
+}
+
+/* Drip effect using pseudo-element */
+.icing-layer::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  background: radial-gradient(circle at 10% 10%, #fff 50%, transparent 50%) 0 0/30px 40px repeat-x;
+}
+  </style>
+</head>
+<body>
+  
+  <audio id="birthdayMusic" src="Happy.mp3" loop></audio>
+
+  <div class="stage">
+    <div class="envelope" id="envelope">
+      <div class="flap" id="flap"></div>
+      <div class="heart">💗</div>
+      <div class="envelope-text">Click the Letter BD Girl</div>
+    </div>
+      <div class="candle" id="candle">
+    <div class="flame" id="flame"></div>
+  </div>
+<div class="layer layer-top" id="layer-bottom">
+  <div class="icing-layer"></div>
+</div>
+<div class="layer layer-middle" id="layer-middle">
+  <div class="icing-layer"></div>
+</div>
+<div class="layer layer-bottom" id="layer-top">
+  <div class="icing-layer"></div>
+
+</div>
+
+
+    <div class="message-box" id="messageBox"></div>
+
+    <div class="cake" id="cake">
+      <div class="cake-inner" id="cakeInner">
+        <div class="cake-message">Happy Birthday Kyutieee patotieeee</div>
+        <div class="layer layer-bottom" id="layer-bottom"></div>
+        <div class="layer layer-middle" id="layer-middle"></div>
+        <div class="layer layer-top" id="layer-top">
+          <div class="candle" id="candle">
+            <div class="flame" id="flame"></div>
+          </div>
+        </div>
+        <div class="cake-bible">Psalms 20:4 (NIV) “May he give you the desire of your heart and make all your plans succeed.”</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const envelope = document.getElementById("envelope");
+const flap = document.getElementById("flap");
+const messageBox = document.getElementById("messageBox");
+const cakeInner = document.getElementById("cakeInner");
+const layerBottom = document.getElementById("layer-bottom");
+const layerMiddle = document.getElementById("layer-middle");
+const layerTop = document.getElementById("layer-top");
+const candle = document.getElementById("candle");
+const flame = document.getElementById("flame");
+const birthdayMusic = document.getElementById("birthdayMusic"); // music element
+
+const message = "Happy Birthday Kyutieee! 🎉\n Enjoy your day to the fullest. Always remember God will provide and guide you in every step. Thank you for everything you do and for being who you are. I pray God fills your life with happiness, health, and success. May He protect you and your family and lead you to your best path. I am grateful for you and I hope this year brings you more joy and love than ever mwhehehehe 🫶✨.";
+
+envelope.addEventListener("click", () => {
+  // Play music on click
+  birthdayMusic.play().catch(() => {
+    console.log("User interaction required to play music.");
+  });
+
+  messageBox.textContent = "";
+  flap.classList.add("open");
+  messageBox.classList.add("show");
+  let i = 0;
+
+  function typeWriter() {
+    if (i < message.length) {
+      messageBox.textContent += message.charAt(i);
+      i++;
+
+      if (Math.random() < 0.08) launchMiniConfetti();
+      if (Math.random() < 0.05) launchMiniBalloons();
+      if (Math.random() < 0.02) launchSparkle();
+
+      setTimeout(typeWriter, 70);
+    } else {
+      envelope.classList.add("hide");
+      messageBox.classList.add("hide");
+
+      cakeInner.classList.add("show");
+      setTimeout(() => layerBottom.classList.add("show"), 200);
+      setTimeout(() => layerMiddle.classList.add("show"), 900);
+      setTimeout(() => layerTop.classList.add("show"), 1600);
+      setTimeout(() => candle.classList.add("show"), 2200);
+      setTimeout(() => flame.classList.add("show"), 2600);
+
+      setTimeout(() => {
+        launchConfetti();
+        launchFireworks();
+        launchBalloons();
+        const repeat = setInterval(launchFireworks, 1500);
+        setTimeout(() => clearInterval(repeat), 6000);
+      }, 300);
+    }
+  }
+
+  typeWriter();
+});
+
+function launchMiniBalloons() {
+  const colors = ["#ff4da6", "#ff80c0", "#6a5acd", "#4de0e0", "#ffd24d"];
+  const balloon = document.createElement("div");
+  balloon.className = "balloon";
+  balloon.style.left = Math.random() * window.innerWidth + "px";
+  balloon.style.width = "20px";
+  balloon.style.height = "30px";
+  balloon.style.background = colors[Math.floor(Math.random() * colors.length)];
+  balloon.style.animationDuration = 4 + Math.random() * 2 + "s";
+  document.body.appendChild(balloon);
+  setTimeout(() => balloon.remove(), 4000);
+}
+
+function launchMiniConfetti() {
+  const emojis = ["🎉","✨","💖","🎊","⭐","🌸"];
+  const conf = document.createElement("div");
+  conf.className = "confetti";
+  conf.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+  conf.style.left = Math.random() * window.innerWidth + "px";
+  conf.style.top = "-10px";
+  conf.style.fontSize = 12 + Math.random()*12 + "px";
+  conf.style.animationDuration = 2 + Math.random() * 1 + "s";
+  document.body.appendChild(conf);
+  setTimeout(() => conf.remove(), 3000);
+}
+
+function launchSparkle() {
+  const sparkle = document.createElement("div");
+  sparkle.className = "confetti";
+  sparkle.textContent = "✨";
+  sparkle.style.left = Math.random() * window.innerWidth + "px";
+  sparkle.style.top = Math.random() * window.innerHeight/2 + "px";
+  sparkle.style.fontSize = 14 + Math.random()*10 + "px";
+  sparkle.style.animationDuration = 2 + Math.random() * 1 + "s";
+  document.body.appendChild(sparkle);
+  setTimeout(() => sparkle.remove(), 3000);
+}
+
+function launchConfetti() {
+  const emojis = ["🎉","✨","💖","🎊","⭐","🌸"];
+  for (let i = 0; i < 50; i++) {
+    const conf = document.createElement("div");
+    conf.className = "confetti";
+    conf.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    conf.style.left = Math.random() * window.innerWidth + "px";
+    conf.style.top = "-20px";
+    conf.style.animationDelay = (Math.random() * 2) + "s";
+    conf.style.fontSize = 20 + Math.random()*20 + "px";
+    document.body.appendChild(conf);
+    setTimeout(() => conf.remove(), 4000);
+  }
+}
+
+function launchFireworks() {
+  for (let i = 0; i < 6; i++) {
+    const fw = document.createElement("div");
+    fw.className = "firework";
+    const size = 100 + Math.random()*120;
+    fw.style.width = size + "px";
+    fw.style.height = size + "px";
+    fw.style.left = Math.random() * window.innerWidth + "px";
+    fw.style.top = Math.random() * window.innerHeight/1.5 + "px";
+    fw.style.background = `radial-gradient(circle, hsla(${Math.random()*360},100%,70%,1) 20%, transparent 70%)`;
+    document.body.appendChild(fw);
+    setTimeout(() => fw.remove(), 1200);
+  }
+}
+
+function launchBalloons() {
+  const colors = ["#ff4da6", "#ff80c0", "#6a5acd", "#4de0e0", "#ffd24d"];
+  for (let i = 0; i < 20; i++) {
+    const balloon = document.createElement("div");
+    balloon.className = "balloon";
+    balloon.style.left = Math.random() * window.innerWidth + "px";
+    balloon.style.background = colors[Math.floor(Math.random() * colors.length)];
+    balloon.style.animationDelay = (Math.random() * 2) + "s";
+    document.body.appendChild(balloon);
+    setTimeout(() => balloon.remove(), 6000);
+  }
+}
+</script>
+</body>
+</html>
